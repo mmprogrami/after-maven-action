@@ -1,0 +1,13 @@
+name: After Maven
+description: Runs after_maven.sh using xsltproc and count.xslt
+runs:
+  using: "composite"
+  steps:
+    - name: Install xsltproc
+      run: sudo apt-get update && sudo apt-get install -y xsltproc
+
+    - name: Make after_maven.sh executable
+      run: chmod +x ${{ github.action_path }}/after_maven.sh
+
+    - name: Run after_maven.sh
+      run: ${{ github.action_path }}/after_maven.sh
