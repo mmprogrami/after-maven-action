@@ -14,7 +14,7 @@ runs:
     - name: Install xsltproc (macOS)
       if: runner.os == 'macOS'
       run: |
-        brew install libxslt
+        NONINTERACTIVE=1 brew install libxslt
       shell: bash
     - name: Install xsltproc (Windows)
       if: runner.os == 'Windows'
