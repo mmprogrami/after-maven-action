@@ -3,6 +3,10 @@ description: Runs after_maven.sh using xsltproc and count.xslt
 runs:
   using: "composite"
   steps:
+    - name: Set path separator
+      id: path_sep
+      run: echo "::set-output name=sep::$(if [ $RUNNER_OS = 'Windows' ]; then echo '\'; else echo '/'; fi)"
+      shell: bash
     - name: Install xsltproc (Linux)
       if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install -y xsltproc
@@ -16,8 +20,8 @@ runs:
       run: choco install xsltproc
       shell: pwsh
     - name: Make after_maven.sh executable
-      run: chmod +x ${{ github.action_path }}/after_maven.sh
+      run: chmod +x ${{ github.action_path }}${{ steps.path_sep.outputs.sep }}after_maven.sh
       shell: bash
     - name: Run after_maven.sh
-      run: ${{ github.action_path }}/after_maven.sh
+      run: ${{ github.action_path }}${{ steps.path_sep.outputs.sep }}after_maven.sh
       shell: bash
