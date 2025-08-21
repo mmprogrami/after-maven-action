@@ -16,7 +16,6 @@ runs:
       run: |
         brew install libxslt bash
         echo $(brew --prefix)/bin/bash | sudo tee -a /etc/shells
-        chsh -s $(brew --prefix)/bin/bash
       shell: bash
     - name: Install xsltproc (Windows)
       if: runner.os == 'Windows'
@@ -26,5 +25,7 @@ runs:
       run: chmod +x ${{ steps.norm_path.outputs.norm_path }}/after_maven.sh
       shell: bash
     - name: Run after_maven.sh
-      run: ${{ steps.norm_path.outputs.norm_path }}/after_maven.sh
+      run: |
+        ${{ steps.norm_path.outputs.norm_path }}/after_maven.sh
+        ${{ steps.norm_path.outputs.norm_path }}/exit_after_maven.sh
       shell: bash
