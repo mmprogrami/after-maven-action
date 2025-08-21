@@ -1,5 +1,9 @@
+---
 name: After Maven
 description: Runs after_maven.sh using xsltproc and count.xslt
+branding:
+  icon: 'alert-circle'
+  color: 'blue'
 runs:
   using: "composite"
   steps:
