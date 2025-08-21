@@ -5,9 +5,10 @@ runs:
   steps:
     - name: Install xsltproc
       run: sudo apt-get update && sudo apt-get install -y xsltproc
-
+      shell: bash
     - name: Make after_maven.sh executable
       run: chmod +x ${{ github.action_path }}/after_maven.sh
-
+      shell: bash
     - name: Run after_maven.sh
       run: ${{ github.action_path }}/after_maven.sh
+      shell: bash
