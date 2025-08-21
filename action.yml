@@ -26,5 +26,5 @@ runs:
     - name: Run after_maven.sh
       run: |
         ${{ steps.norm_path.outputs.norm_path }}/after_maven.sh
-        ${{ steps.norm_path.outputs.norm_path }}/exit_after_maven.sh
+        source ${{ steps.norm_path.outputs.norm_path }}/exit_after_maven.sh
       shell: bash
