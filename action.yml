@@ -9,7 +9,7 @@ runs:
       shell: bash
     - name: Install xsltproc (macOS)
       if: runner.os == 'macOS'
-      run: brew install xsltproc
+      run: brew install libxslt
       shell: bash
     - name: Install xsltproc (Windows)
       if: runner.os == 'Windows'
