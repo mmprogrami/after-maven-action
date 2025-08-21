@@ -1,3 +1,4 @@
+#/usr/bin/env bash
 #This script can be run after running maven
 # It will fill a fill and source a file 'job.env'
 # It will contain a few new variables which can be sourced subsequently
