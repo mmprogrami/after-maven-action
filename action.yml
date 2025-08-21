@@ -9,7 +9,7 @@ runs:
       shell: bash
     - name: Install xsltproc (Linux)
       if: runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install -y xsltproc
+      run: sudo apt-get -qq update && sudo apt-get -q install -y xsltproc
       shell: bash
     - name: Install xsltproc (macOS)
       if: runner.os == 'macOS'
