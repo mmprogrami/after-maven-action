@@ -1,0 +1,5 @@
+= After maven action for github
+
+This contains a script that can be run after a maven build.
+
+This script figures out how many tests ran and how many of them failed.
