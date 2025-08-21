@@ -1,4 +1,4 @@
-
+JOB_ENV=${JOB_ENV:=job.env}
 source ${JOB_ENV}
 
 if [ $MAVEN_TESTS_ERROR -gt 0 ] ; then
