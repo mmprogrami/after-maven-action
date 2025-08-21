@@ -13,7 +13,7 @@ runs:
       shell: bash
     - name: Install xsltproc (macOS)
       if: runner.os == 'macOS'
-      run: >
+      run: |
         brew install libxslt bash
         echo $(brew --prefix)/bin/bash | sudo tee -a /etc/shells
         chsh -s $(brew --prefix)/bin/bash
