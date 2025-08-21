@@ -18,16 +18,11 @@ setProperty "PROJECT_VERSION" "$(mvn  -ntp help:evaluate -Dexpression=project.ve
 
 mapfile -t counts < <(find . \( -name 'surefire-reports' -o -name 'failsafe-reports' \) -exec find \{\} -name '*.xml' -print0   \; | xargs -0 xsltproc "${SCRIPT_DIR}"/count.xslt | awk -F'[, ]+' 'BEGIN {t=0; f=0; e=0; s=0}  {t+=$3; f+=$5; e+=$7; s+=$9} END {print t"\n"f"\n"e"\n"s}' )
 
-setProperty "JOB_ID_BUILD_STAGE" "$CI_JOB_ID" "$JOB_ENV"
 setProperty "MAVEN_TESTS_RUN" "${counts[0]}" "$JOB_ENV"
 setProperty "MAVEN_TESTS_FAILED" "${counts[1]}" "$JOB_ENV"
 setProperty "MAVEN_TESTS_ERROR" "${counts[2]}" "$JOB_ENV"
 setProperty "MAVEN_TESTS_SKIPPED" "${counts[3]}" "$JOB_ENV"
-setProperty "SKIP_TESTS" "${SKIP_TESTS}" "$JOB_ENV"
-setProperty "SKIP_TESTS_IMPLICIT" "${SKIP_TESTS_IMPLICIT}" "$JOB_ENV"
 
-
-    
     
 # make sure some files exist otherwise 'reports' gets confused
 if [ "${counts[0]}" -eq 0 ]; then
@@ -45,6 +40,14 @@ else
   date --iso-8601=seconds > public/date  
 fi
 
-# shellcheck disable=SC1090
-source "$JOB_ENV"
 
+cat ${JOB_ENV}
+source ${JOB_ENV}
+
+if [ $MAVEN_TESTS_ERROR gt 0 ] ; then
+  exit 1
+elif [ $MAVEN_TESTS_FAILED -gt 0 ]; then
+  exit 2
+else
+  exit 0
+fi
