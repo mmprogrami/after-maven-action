@@ -24,7 +24,7 @@ This script figures out how many tests ran and how many of them failed. The idea
         with:
           files: "**/target/surefire-reports/*.xml"
           check_name: Tests results
-      - uses: mihxil/after-maven-action@main
+      - uses: mmprogrami/after-maven-action@main
 ----
 Like this, all tests are run (and published). The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures.
 
