@@ -31,15 +31,5 @@ if [ "${counts[0]}" -eq 0 ]; then
   mkdir -p empty/target/failsafe-reports ; echo '<testsuite />' >  empty/target/surefire-reports/TEST-empty.xml 
 fi
 
-wc -l "$JOB_ENV"
-
-if [ -d target/site ]; then 
-  cp -r target/site/* public  
-else  
-  mkdir -p public 
-  date --iso-8601=seconds > public/date  
-fi
-
-
 cat ${JOB_ENV}
 
