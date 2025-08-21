@@ -5,7 +5,12 @@ runs:
   steps:
     - name: Set path separator
       id: path_sep
-      run: echo "::set-output name=sep::$(if [ $RUNNER_OS = 'Windows' ]; then echo '\'; else echo '/'; fi)"
+      run: |
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          echo "sep=\\" >> $GITHUB_OUTPUT
+        else
+          echo "sep=/" >> $GITHUB_OUTPUT
+        fi
       shell: bash
     - name: Install xsltproc (Linux)
       if: runner.os == 'Linux'
