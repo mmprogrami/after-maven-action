@@ -5,6 +5,10 @@ This contains a script that can be run after a maven build.
 This script figures out how many tests ran and how many of them failed. The idea is that maven itself can just ignore test failures, and run to its end.
 
 
+== Usage
+
+Your step to build with maven and report the result might look something like this
+
 [source, yaml]
 ----
     env:
@@ -25,5 +29,19 @@ This script figures out how many tests ran and how many of them failed. The idea
           check_name: Tests results
       - uses: mmprogrami/after-maven-action@v1
 ----
-Like this, all tests are run (and published). The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are stil run, and it is visible what those are. Also there won't be a dip in the coverage if one test happened to fail once.
+Like this, all tests are run (and published). The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are still run, and it is visible what those are. Also there won't be a dip in the coverage if one test happened to fail once.
 
+== Notes about the implementation
+
+This thing will basically run a (bash) script that will search all failsafe/surefire results xmls and extract the number of tests that ran, failed and errored, and add those up. The results are written in a file 'job.env' which may look something like this:
+[source, properties]
+----
+PROJECT_VERSION=0.19-SNAPSHOT
+MAVEN_TESTS_RUN=1626
+MAVEN_TESTS_FAILED=8
+MAVEN_TESTS_ERROR=7
+MAVEN_TESTS_SKIPPED=0
+----
+If there are failed or errored tests, the action will exit with a code > 0, which will fail the action.
+
+The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
