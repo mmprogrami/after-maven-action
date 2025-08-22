@@ -14,7 +14,6 @@ runs:
     - name: Install xsltproc (Linux)
       if: runner.os == 'Linux'
       run: |
-        debconf-set man-db/auto-update false
         rm /var/lib/man-db/auto-update
         apt-get -qq update 
         apt-get -qq install --no-install-recommends -y xsltproc
