@@ -5,30 +5,5 @@ branding:
   icon: 'alert-circle'
   color: 'blue'
 runs:
-  using: "composite"
-  steps:
-    - name: Normalize action path
-      id: norm_path
-      run: echo "norm_path=${GITHUB_ACTION_PATH//\\//}" >> $GITHUB_OUTPUT
-      shell: bash
-    - name: Install xsltproc (Linux)
-      if: runner.os == 'Linux'
-      run: sudo apt-get -qq update && sudo apt-get -q install -y xsltproc
-      shell: bash
-    - name: Install xsltproc (macOS)
-      if: runner.os == 'macOS'
-      run: |
-        NONINTERACTIVE=1 brew install --quiet libxslt bash
-      shell: bash
-    - name: Install xsltproc (Windows)
-      if: runner.os == 'Windows'
-      run: choco install xsltproc
-      shell: pwsh
-    - name: Make after_maven.sh executable
-      run: chmod +x ${{ steps.norm_path.outputs.norm_path }}/after_maven.sh
-      shell: bash
-    - name: Run after_maven.sh
-      run: |
-        ${{ steps.norm_path.outputs.norm_path }}/after_maven.sh
-        source ${{ steps.norm_path.outputs.norm_path }}/exit_after_maven.sh
-      shell: bash
+  using: "node18"
+  main: 'index.js'

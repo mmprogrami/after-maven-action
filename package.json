@@ -1,0 +1,20 @@
+{
+  "name": "after-maven-action",
+  "version": "2.0.0",
+  "description": "GitHub Action to process XML files with XSLT after Maven",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0 <19.0.0"
+  },
+  "dependencies": {
+    "glob": "^8.1.0",
+    "libxslt": "^0.10.2",
+    "libxmljs2": "^0.37.0"
+
+
+  },
+  "license": "MIT"
+}
