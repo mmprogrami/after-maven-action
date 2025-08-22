@@ -46,7 +46,7 @@ If there are failed or errored tests, the action will exit with a code > 0, whic
 
 The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 
-== TODO
+=== TODO
 
 - xslt is used, because that was easiest, but it requires installing xsltproc on the system, which slows things down a bit. It may be possible to obtain the same results using just tools available on the standard images already.
 - Perhaps it is possible to add some parameters, e.g. to optionally fail on test skips, to fail on too few tests run, or to fail on errored tests only, or whatever one may want to do.
