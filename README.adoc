@@ -1,4 +1,5 @@
 = After maven action for github
+:toc:
 
 This contains a script that can be run after a maven build.
 
