@@ -13,7 +13,11 @@ runs:
       shell: bash
     - name: Install xsltproc (Linux)
       if: runner.os == 'Linux'
-      run: sudo apt-get -qq update && sudo apt-get -qq install --no-install-recommends -y xsltproc
+      run: |
+        debconf-set man-db/auto-update false
+        rm /var/lib/man-db/auto-update
+        apt-get -qq update 
+        apt-get -qq install --no-install-recommends -y xsltproc
       shell: bash
     - name: Install xsltproc (macOS)
       if: runner.os == 'macOS'
