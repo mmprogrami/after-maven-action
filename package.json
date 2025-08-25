@@ -14,5 +14,8 @@
     "glob": "^8.1.0",
     "saxon-js": "^2.7.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.3"
+  }
 }

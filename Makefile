@@ -1,6 +1,7 @@
 
 
 install: node_modules count.sef.json
+	npx ncc build index.js -o dist
 
 
 node_modules:
