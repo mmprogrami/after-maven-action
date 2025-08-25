@@ -1,11 +1,8 @@
 const glob = require('glob');
-const libxslt = require('libxslt');
 const fs = require('fs');
 const path = require('path');
-const util = require('util');
 const { exec } = require('child_process');
-
-
+const SaxonJS = require("saxon-js");
 
 
 function setProperty(key, value, filePath) {
@@ -28,8 +25,15 @@ const JOB_ENV = path.resolve('job.env');
 
 exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e, stdout, stderr) => {
     setProperty("PROJECT_VERSION", `${stdout}`, JOB_ENV);
+    //const xsltPath = path.join(__dirname, 'count.xslt');
+    const sefPath = path.join(__dirname, 'count.sef.json');
 
-    const xsltPath = path.join(__dirname, 'count.xslt');
+    const options = {
+        escape: false,
+        selfClosingTags: true,
+        outputMethod: 'string'
+    };
+
 
     let run = 0,
         failed = 0,
@@ -38,43 +42,58 @@ exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e
    // Find all XML files
     glob('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()}, (err, files) => {
         if (err) throw err;
-        for (const file of files) {
-            const xml = fs.readFileSync(file, 'utf8');
-            const xslt = fs.readFileSync(xsltPath, 'utf8');
-            const result = libxslt.parse(xslt).apply(xml);
 
+        const promises = files.map(file => {
+            try {
+                const promise = SaxonJS.transform({
+                    stylesheetFileName: sefPath,
+                    sourceFileName: file,
+                    destination: "serialized"
+                    }, "async"
+                );
+                promise.then((output) => {
+                    const result = output.principalResult;
+                    result.split('\n').forEach(line => {
+                        if (!line.trim()) return;
+                        // Split by comma or spaces
+                        const fields = line.split(/[, ]+/);
+                        run += Number(fields[2] || 0);
+                        failed += Number(fields[4] || 0);
+                        error += Number(fields[6] || 0);
+                        skipped += Number(fields[8] || 0);
+                    });
+                }).catch(e => {
+                    console.log(e);
+                });
+                return promise;
+            } catch (e) {
+                console.log(e)
+            }
 
-            result.split('\n').forEach(line => {
-                if (!line.trim()) return;
-                // Split by comma or spaces
-                const fields = line.split(/[, ]+/);
-                run += Number(fields[2] || 0);
-                failed += Number(fields[4] || 0);
-                error += Number(fields[6] || 0);
-                skipped += Number(fields[8] || 0);
-            });
+        });
 
-        }
+        Promise.all(promises).then(() => {
 
-        setProperty('MAVEN_TESTS_RUN', run, JOB_ENV);
-        setProperty('MAVEN_TESTS_FAILED', failed, JOB_ENV);
-        setProperty('MAVEN_TESTS_ERROR', error, JOB_ENV);
-        setProperty('MAVEN_TESTS_SKIPPED', skipped, JOB_ENV);
+            setProperty('MAVEN_TESTS_RUN', run, JOB_ENV);
+            setProperty('MAVEN_TESTS_FAILED', failed, JOB_ENV);
+            setProperty('MAVEN_TESTS_ERROR', error, JOB_ENV);
+            setProperty('MAVEN_TESTS_SKIPPED', skipped, JOB_ENV);
 
-        console.log(fs.readFileSync(JOB_ENV, 'utf8'));
+            console.log(fs.readFileSync(JOB_ENV, 'utf8'));
 
-        if (error > 0) {
-            console.error(`Some (${error}) tests had errors. Exit 1.`);
-            process.exit(1);
-        } else if (failed > 0) {
-            console.error(`Some (${failed}) tests had failures. Exit 2`);
-            process.exit(2);
-        } else if (run === 0) {
-            console.error('Everything seems ok, but no tests run. Exit 0');
-            process.exit(0);
-        } else {
-            console.log('All tests passed. Exit 0');
-            process.exit(0);
-        }
+            if (error > 0) {
+                console.error(`Some (${error}) tests had errors. Exit 1.`);
+                process.exit(1);
+            } else if (failed > 0) {
+                console.error(`Some (${failed}) tests had failures. Exit 2`);
+                process.exit(2);
+            } else if (run === 0) {
+                console.error('Everything seems ok, but no tests run. Exit 0');
+                process.exit(0);
+            } else {
+                console.log('All tests passed. Exit 0');
+                process.exit(0);
+            }
+        });
     });
 });
