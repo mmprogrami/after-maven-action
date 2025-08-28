@@ -48,3 +48,4 @@ The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 === History
 
 Originally this script was using bash/xsltproc, which made it a bit slow as a github action. So starting from v2 it is purely nodejs.
+
