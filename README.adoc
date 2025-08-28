@@ -49,3 +49,46 @@ The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 
 Originally this script was using bash/xsltproc, which made it a bit slow as a github action. So starting from v2 it is purely nodejs.
 
+
+=== Local development
+
+[source, bash]
+----
+sudo apt-get install nodejs npm
+python3 -m venv ~/venvs/npm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+nvm install 20
+
+make clean install
+----
+
+[source, bash]
+----
+(main,7)~/github/mihxil/math$ node ~/github/mmprogrami/after-maven-action/dist/index.js
+PROJECT_VERSION=0.19-SNAPSHOT
+MAVEN_TESTS_RUN=4825
+MAVEN_TESTS_FAILED=7
+MAVEN_TESTS_ERROR=7
+MAVEN_TESTS_SKIPPED=8
+
+mihxil-physics failure: reciprocal org.meeuw.physics.PhysicalNumberTest
+
+mihxil-algebra failure: fromString org.meeuw.test.math.abstractalgebra.complex.ComplexNumberTest
+mihxil-algebra failure: times org.meeuw.test.math.abstractalgebra.complex.ComplexNumberTest
+
+mihxil-math-test failure: reciprocal org.meeuw.math.abstractalgebra.reals.RealFieldTest
+mihxil-math-test failure: inverse org.meeuw.math.abstractalgebra.reals.RealFieldTest
+
+mihxil-math failure: zeroWithUncertainty org.meeuw.test.math.text.UncertainDoubleFormatTest
+
+mihxil-statistics error: powNegative1 group org.meeuw.math.statistics.StatisticalDoubleTest
+mihxil-statistics error: powNegative1 group org.meeuw.math.statistics.StatisticalDoubleTest
+mihxil-statistics error: algebraicBinaryOperators org.meeuw.math.statistics.StatisticalDoubleTest
+mihxil-statistics error: reciprocal org.meeuw.math.statistics.StatisticalDoubleTest
+mihxil-statistics error: division org.meeuw.math.statistics.StatisticalDoubleTest
+mihxil-statistics error: algebraicUnaryOperators org.meeuw.math.statistics.StatisticalDoubleTest
+mihxil-statistics error: inverse org.meeuw.math.statistics.StatisticalDoubleTest
+mihxil-statistics failure: anotherZero org.meeuw.math.statistics.StatisticalDoubleTest
+
+Some (7) tests had errors. Exit 1.
+----

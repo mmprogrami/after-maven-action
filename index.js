@@ -77,18 +77,23 @@ exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e
             console.log(fs.readFileSync(JOB_ENV, 'utf8'));
 
             glob('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()}, (err, files) => {
+                files.sort((a, b) => {
+                    fs.statSync(a).mtime - fs.statSync(b).mtime;
+                });
                 const promises = files.map(file => {
 
                     return SaxonJS.transform({
-                            stylesheetFileName: failuresAndErrorsPath,
-                            sourceFileName: file,
-                            destination: "serialized"
+                        stylesheetFileName: failuresAndErrorsPath,
+                        sourceFileName: file,
+                        destination: "serialized",
+                        stylesheetParams: {
+                            artifactIdPad:  30,
+                            namePad: 50
+                        }
                         }, "async"
                     ).then((output) => {
                         const result = output.principalResult;
-                        if (result) {
-                            console.log(result);
-                        }
+                        console.log(result);
                     });
                 });
                 Promise.all(promises).then(() => {

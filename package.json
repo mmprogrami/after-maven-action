@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js"
+    "after_maven": "node dist/index.js"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -16,6 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@vercel/ncc": "^0.38.3"
+    "@vercel/ncc": "^0.38.3",
+    "xslt3": "^2.7.0"
   }
 }

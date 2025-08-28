@@ -1,2 +1,4 @@
 /.idea/
 /node_modules/
+/failures_and_errors.sef.json
+/count.sef.json
