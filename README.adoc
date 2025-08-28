@@ -16,7 +16,7 @@ Your step to build with maven and report the result might look something like th
       MAVEN_ARGS: '--no-transfer-progress'
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 17
@@ -28,13 +28,13 @@ Your step to build with maven and report the result might look something like th
         with:
           files: "**/target/surefire-reports/*.xml"
           check_name: Tests results
-      - uses: mmprogrami/after-maven-action@v1
+      - uses: mmprogrami/after-maven-action@v2
 ----
 Like this, all tests are run (and published). The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are still run, and it is visible what those are. Also there won't be a dip in the coverage if one test happened to fail once.
 
 == Notes about the implementation
 
-This thing will basically run a (bash) script that will search all failsafe/surefire results xmls and extract the number of tests that ran, failed and errored, and add those up. The results are written in a file 'job.env' which may look something like this:
+This thing will basically  search all failsafe/surefire results xmls and extract the number of tests that ran, failed and errored, and add those up. The results are written in a file 'job.env' which may look something like this:
 [source, properties]
 ----
 PROJECT_VERSION=0.19-SNAPSHOT
@@ -47,7 +47,10 @@ If there are failed or errored tests, the action will exit with a code > 0, whic
 
 The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 
-=== TODO
-
-- xslt is used, because that was easiest, but it requires installing xsltproc on the system, which slows things down a bit. It may be possible to obtain the same results using just tools available on the standard images already.
+=== TODO 
 - Perhaps it is possible to add some parameters, e.g. to optionally fail on test skips, to fail on too few tests run, or to fail on errored tests only, or whatever one may want to do.
+
+
+=== History
+
+Originally this script was using bash/xsltproc, which made it a bit slow as a github action. So starting from v2 it is purely nodejs.
