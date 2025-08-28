@@ -93,7 +93,9 @@ exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e
                         }, "async"
                     ).then((output) => {
                         const result = output.principalResult;
-                        console.log(result);
+                        if (result) {
+                          console.log(result);
+                        }
                     });
                 });
                 Promise.all(promises).then(() => {
