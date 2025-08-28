@@ -15,19 +15,13 @@ Your step to build with maven and report the result might look something like th
     env:
       MAVEN_ARGS: '--no-transfer-progress'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 17
       - name: Build with Maven
         run: mvn -B -D"maven.test.failure.ignore=true"
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: "**/target/surefire-reports/*.xml"
-          check_name: Tests results
       - uses: mmprogrami/after-maven-action@v2
 ----
 Like this, all tests are run (and published). The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are still run, and it is visible what those are. Also there won't be a dip in the coverage if one test happened to fail once.
