@@ -16405,13 +16405,8 @@ const JOB_ENV = path.resolve('job.env');
 exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e, stdout, stderr) => {
     setProperty("PROJECT_VERSION", `${stdout}`, JOB_ENV);
     //const xsltPath = path.join(__dirname, 'count.xslt');
-    const sefPath = __nccwpck_require__.ab + "count.sef.json";
-
-    const options = {
-        escape: false,
-        selfClosingTags: true,
-        outputMethod: 'string'
-    };
+    const countSefPath = __nccwpck_require__.ab + "count.sef.json"
+    const failuresAndErrorsPath = __nccwpck_require__.ab + "failures_and_errors.sef.json"
 
 
     let run = 0,
@@ -16459,6 +16454,18 @@ exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e
             setProperty('MAVEN_TESTS_SKIPPED', skipped, JOB_ENV);
 
             console.log(fs.readFileSync(JOB_ENV, 'utf8'));
+
+            glob('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()}, (err, files) => {
+                SaxonJS.transform({
+                        stylesheetFileName: __nccwpck_require__.ab + "failures_and_errors.sef.json",
+                        sourceFileName: file,
+                        destination: "serialized"
+                    }, "async"
+                ).then((output) => {
+                    const result = output.principalResult;
+                    console.log(result);
+                });
+            });
 
             if (error > 0) {
                 console.error(`Some (${error}) tests had errors. Exit 1.`);

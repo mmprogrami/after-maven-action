@@ -1,6 +1,6 @@
 
 
-install: node_modules count.sef.json
+install: node_modules count.sef.json failures_and_errors.sef.json
 	npx ncc build index.js -o dist
 
 
@@ -10,7 +10,7 @@ node_modules:
 	npm install
 
 clean:
-	rm -rf node_modules package-lock.json count.sef.json
+	rm -rf node_modules package-lock.json rm *.sef.json
 
-count.sef.json: count.xslt
-	npx xslt3 -xsl:$< -export:$@ -t
+%.sef.json: %.xslt
+	npx xslt3 -xsl:$< -export:$@ -t | true
