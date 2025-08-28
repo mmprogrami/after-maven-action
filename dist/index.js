@@ -16456,30 +16456,36 @@ exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e
             console.log(fs.readFileSync(JOB_ENV, 'utf8'));
 
             glob('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()}, (err, files) => {
-                SaxonJS.transform({
-                        stylesheetFileName: __nccwpck_require__.ab + "failures_and_errors.sef.json",
-                        sourceFileName: file,
-                        destination: "serialized"
-                    }, "async"
-                ).then((output) => {
-                    const result = output.principalResult;
-                    console.log(result);
+                const promises = files.map(file => {
+
+                    return SaxonJS.transform({
+                            stylesheetFileName: __nccwpck_require__.ab + "failures_and_errors.sef.json",
+                            sourceFileName: file,
+                            destination: "serialized"
+                        }, "async"
+                    ).then((output) => {
+                        const result = output.principalResult;
+                        if (result) {
+                            console.log(result);
+                        }
+                    });
+                });
+                Promise.all(promises).then(() => {
+                    if (error > 0) {
+                        console.error(`Some (${error}) tests had errors. Exit 1.`);
+                        process.exit(1);
+                    } else if (failed > 0) {
+                        console.error(`Some (${failed}) tests had failures. Exit 2`);
+                        process.exit(2);
+                    } else if (run === 0) {
+                        console.error('Everything seems ok, but no tests run. Exit 0');
+                        process.exit(0);
+                    } else {
+                        console.log('All tests passed. Exit 0');
+                        process.exit(0);
+                    }
                 });
             });
-
-            if (error > 0) {
-                console.error(`Some (${error}) tests had errors. Exit 1.`);
-                process.exit(1);
-            } else if (failed > 0) {
-                console.error(`Some (${failed}) tests had failures. Exit 2`);
-                process.exit(2);
-            } else if (run === 0) {
-                console.error('Everything seems ok, but no tests run. Exit 0');
-                process.exit(0);
-            } else {
-                console.log('All tests passed. Exit 0');
-                process.exit(0);
-            }
         });
     });
 });
