@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 const SaxonJS = require("saxon-js");
+import { getInput } from '@actions/core';
+
 
 const JOB_ENV = path.resolve('job.env');
 
@@ -100,7 +102,8 @@ async function printFailuresAndErrors(files) {
 }
 
 async function main() {
-    if (process.env['INPUT_DETERMINE_VERSION'] === 'true' || true) {
+    console.log(process.env);
+    if (getInput('determine_version') === 'true') {
         await runMavenVersion();
     }
     const files = await globAsync('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()});

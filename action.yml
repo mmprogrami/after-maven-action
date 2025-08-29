@@ -4,12 +4,17 @@ description: Runs after_maven.sh using xsltproc and count.xslt
 branding:
   icon: 'alert-circle'
   color: 'blue'
-runs:
-  using: "node20"
-  main: 'dist/index.js'
 
 inputs:
   determine_version:
     description: 'get the version from the main pom.xml, and show that too'
     required: false
     default: 'true'
+
+
+runs:
+  using: "node20"
+  main: 'dist/index.js'
+
+
+
