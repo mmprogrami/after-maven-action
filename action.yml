@@ -9,7 +9,7 @@ runs:
   main: 'dist/index.js'
 
 inputs:
-  determin_version:
+  determine_version:
     description: 'get the version from the main pom.xml, and show that too'
     required: false
     default: 'true'

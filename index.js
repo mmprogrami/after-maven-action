@@ -100,7 +100,7 @@ async function printFailuresAndErrors(files) {
 }
 
 async function main() {
-    if (process.env['INPUT_DETERMIN_VERSION'] === 'true' || true) {
+    if (process.env['INPUT_DETERMINE_VERSION'] === 'true' || true) {
         await runMavenVersion();
     }
     const files = await globAsync('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()});
