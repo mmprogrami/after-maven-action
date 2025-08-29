@@ -85,7 +85,7 @@ async function processTestReports(files) {
 async function printFailuresAndErrors(files) {
     await Promise.all(files.map(async (file) => {
 
-        const output = SaxonJS.transform({
+        const output = await SaxonJS.transform({
             stylesheetFileName: failuresAndErrorsPath,
             sourceFileName: file,
             destination: "serialized",
@@ -96,7 +96,10 @@ async function printFailuresAndErrors(files) {
         }, "async");
 
         if (output.principalResult) {
-            console.log(output.principalResult);
+            console.error(output.principalResult
+                .replace('[error]', '\x1b[31m[error]\x1b[0m')
+                .replace('[failure]', '\x1b[33m[failure]\x1b[0m')
+            );
         }
     }));
 }
