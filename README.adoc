@@ -22,13 +22,13 @@ Your step to build with maven and report the result might look something like th
           java-version: 17
       - name: Build with Maven
         run: mvn -B -D"maven.test.failure.ignore=true"
-      - uses: mmprogrami/after-maven-action@v2
+      - uses: MMProgrami/after-maven-action@v2
 ----
-Like this, all tests are run (and published). The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are still run, and it is visible what those are. Also there won't be a dip in the coverage if one test happened to fail once.
+Like this, all tests are run. The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are still run, and it is visible what those are. Also, there won't be a dip in the coverage if one test happened to fail once.
 
 == Notes about the implementation
 
-This thing will basically  search all failsafe/surefire results xmls and extract the number of tests that ran, failed and errored, and add those up. The results are written in a file 'job.env' which may look something like this:
+This thing will basically  search all failsafe/surefire results XMLs and extract the number of tests that ran, failed and errored, and add those up. The results are written in a file 'job.env' which may look something like this:
 [source, properties]
 ----
 PROJECT_VERSION=0.19-SNAPSHOT
@@ -39,6 +39,8 @@ MAVEN_TESTS_SKIPPED=0
 ----
 If there are failed or errored tests, the action will exit with a code > 0, which will fail the action.
 
+It will also concisely output which tetsts fails, if there are any.
+
 The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 
 === TODO 
@@ -47,10 +49,10 @@ The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 
 === History
 
-Originally this script was using bash/xsltproc, which made it a bit slow as a github action. So starting from v2 it is purely nodejs.
+Originally this script was using bash/xsltproc, and was (and is) used in link:https://github.org/vpro/maven[dedicated maven docker image], which we use in gitlab pipelines. To make it useable as a github action to I started with just installing the necessary tools and run the same script. This makes it a bit slow as a GitHub action. So starting from v2 it is purely Node.js, just based on the same XSLTs (using SaxonJS to execute them)
 
 
-=== Local development
+=== Local development and useage
 
 [source, bash]
 ----
