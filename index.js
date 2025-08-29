@@ -1,10 +1,7 @@
 const glob = require('glob');
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
 const SaxonJS = require("saxon-js");
-import { getInput } from '@actions/core';
-
 
 const JOB_ENV = path.resolve('job.env');
 
@@ -34,12 +31,15 @@ function globAsync(pattern, options) {
   });
 }
 
-function runMavenVersion() {
-    if (process.env['INPUT_DETERMIN_VERSION'] === 'true' || true) {
+async function runMavenVersion() {
+
+    const { exec } = require('child_process');
+    return new Promise((resolve, reject) => {
         exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e, stdout, stderr) => {
             setProperty("PROJECT_VERSION", `${stdout}`, JOB_ENV);
+            resolve();
         });
-    }
+    });
 }
 const failuresAndErrorsPath = path.join(__dirname, 'failures_and_errors.sef.json');
 
@@ -102,8 +102,8 @@ async function printFailuresAndErrors(files) {
 }
 
 async function main() {
-    console.log(process.env);
-    if (getInput('determine_version') === 'true') {
+    //console.log(process.env);
+    if ((process.env['INPUT_DETERMINE_VERSION'] || 'true') === 'true') {
         await runMavenVersion();
     }
     const files = await globAsync('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()});
