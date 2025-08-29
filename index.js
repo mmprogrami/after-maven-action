@@ -102,7 +102,7 @@ async function printFailuresAndErrors(files) {
 }
 
 async function main() {
-    //console.log(process.env);
+    console.log(process.env);
     if ((process.env['INPUT_DETERMINE_VERSION'] || 'true') === 'true') {
         await runMavenVersion();
     }
