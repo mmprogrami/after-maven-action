@@ -46,7 +46,7 @@
     <xsl:param name="input" />
     <xsl:param name="delimiter" />
     <xsl:choose>
-      <xsl:when test="contains($input,$delimiter)">
+      <xsl:when test="contains($input,$delimiter) and string-length(substring-after($input, $delimiter)) &gt; 0">
         <xsl:call-template name="substring-after-last">
           <xsl:with-param name="input"
                           select="substring-after($input,$delimiter)" />
