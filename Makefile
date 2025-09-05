@@ -1,6 +1,6 @@
 
 
-install: node_modules dist/count.sef.json dist/failures_and_errors.sef.json
+install: node_modules dist/count.sef.json dist/failures_and_errors.sef.json dist/jacoco.sef.json
 	npx ncc build index.js -o dist --minify
 
 node_modules:

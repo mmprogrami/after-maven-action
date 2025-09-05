@@ -10,6 +10,10 @@ inputs:
     description: 'get the version from the main pom.xml, and show that too'
     required: false
     default: 'true'
+  coverage:
+    description: 'show also coverage from jacoco.xml'
+    required: false
+    default: 'false'
 
 
 runs:

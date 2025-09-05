@@ -16,6 +16,7 @@
   <xsl:variable name="spaces">
     <xsl:text>                                                                 </xsl:text>
   </xsl:variable>
+
   <xsl:variable name="projectDir">
     <xsl:call-template name="substring-after-last">
       <xsl:with-param name="input" select="/testsuite/properties/property[@name = 'basedir']/@value"/>

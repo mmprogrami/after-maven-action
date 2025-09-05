@@ -41,7 +41,6 @@ async function runMavenVersion() {
         });
     });
 }
-const failuresAndErrorsPath = path.join(__dirname, 'failures_and_errors.sef.json');
 
 
 async function processTestReports(files) {
@@ -83,6 +82,8 @@ async function processTestReports(files) {
     return {run, failed, error, skipped};
 }
 async function printFailuresAndErrors(files) {
+    const failuresAndErrorsPath = path.join(__dirname, 'failures_and_errors.sef.json');
+
     await Promise.all(files.map(async (file) => {
 
         const output = await SaxonJS.transform({
@@ -104,6 +105,25 @@ async function printFailuresAndErrors(files) {
     }));
 }
 
+async function printCoverageSummary() {
+    const files = await globAsync('**/target/site/jacoco/jacoco.xml', {cwd: process.cwd()});
+    const jacocoXsl = path.join(__dirname, 'jacoco.sef.json');
+
+    await Promise.all(files.map(async (file) => {
+
+        const output = await SaxonJS.transform({
+            stylesheetFileName: jacocoXsl,
+            sourceFileName: file,
+            destination: "serialized",
+            stylesheetParams: {
+                artifactIdPad: 30,
+                namePad: 50
+            }
+        }, "async");
+        console.log(output.principalResult)
+    }));
+}
+
 async function main() {
     if ((process.env['INPUT_DETERMINE_VERSION'] || 'true') === 'true') {
         await runMavenVersion();
@@ -113,7 +133,12 @@ async function main() {
 
     const {run, failed, error} = await processTestReports(files);
 
+    if ((process.env['INPUT_COVERAGE'] || 'false') === 'true') {
+        await printCoverageSummary();
+    }
+
     await printFailuresAndErrors(files);
+
 
     if (error > 0) {
         console.error(`Some (${error}) tests had errors. Exit 1.`);
