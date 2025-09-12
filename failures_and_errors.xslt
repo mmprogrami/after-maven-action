@@ -28,6 +28,11 @@
     <xsl:value-of select="substring($spaces, 1, $artifactIdPad - string-length($projectDir))" />
   </xsl:variable>
 
+  <xsl:template match="/*">
+    <xsl:text>Not recognized /</xsl:text><xsl:value-of select="name()" />
+    <xsl:text>&#xa;</xsl:text>
+  </xsl:template>
+
   <xsl:template match="/testsuite">
     <xsl:for-each select="testcase/failure | testcase/error">
       <xsl:value-of select="$paddedProjectDir" />
@@ -60,12 +65,13 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="/failsafe-summary">
+  <!--xsl:template match="/failsafe-summary">
     <xsl:text>Summary: completed: </xsl:text><xsl:value-of select="completed" />
     <xsl:text>, errors: </xsl:text><xsl:value-of select="errors" />
     <xsl:text>, failures: </xsl:text><xsl:value-of select="failures" />
     <xsl:text>, skipped: </xsl:text><xsl:value-of select="skipped" />
     <xsl:text>&#xa;</xsl:text>
-  </xsl:template>
+  </xsl:template-->
+
 
 </xsl:stylesheet>
