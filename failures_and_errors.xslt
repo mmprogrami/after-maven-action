@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:output method="xml" omit-xml-declaration="yes" indent="no"/>
+  <xsl:output method="text" omit-xml-declaration="yes" indent="no"/>
 
   <!--
     Simple XSLT that just shows the errors and failures of junit XML result.
@@ -59,4 +59,13 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <xsl:template match="/failsafe-summary">
+    <xsl:text>Summary: completed: </xsl:text><xsl:value-of select="completed" />
+    <xsl:text>, errors: </xsl:text><xsl:value-of select="errors" />
+    <xsl:text>, failures: </xsl:text><xsl:value-of select="failures" />
+    <xsl:text>, skipped: </xsl:text><xsl:value-of select="skipped" />
+    <xsl:text>&#xa;</xsl:text>
+  </xsl:template>
+
 </xsl:stylesheet>
