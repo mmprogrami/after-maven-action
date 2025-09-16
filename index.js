@@ -98,8 +98,8 @@ async function printFailuresAndErrors(files) {
 
         if (output.principalResult) {
             console.error(output.principalResult
-                .replace('[error]', '\x1b[31m[error]\x1b[0m')
-                .replace('[failure]', '\x1b[33m[failure]\x1b[0m')
+                .replaceAll('[error]', '\x1b[31m[error]\x1b[0m')
+                .replaceAll('[failure]', '\x1b[33m[failure]\x1b[0m')
             );
         }
     }));
