@@ -131,7 +131,8 @@ async function main() {
     const files = await globAsync('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()});
     files.sort((a, b) => fs.statSync(a).mtime - fs.statSync(b).mtime);
 
-    const {run, failed, error} = await processTestReports(files);
+    const {run, failed, error} =
+        await processTestReports(files);
 
     if ((process.env['INPUT_COVERAGE'] || 'false') === 'true') {
         await printCoverageSummary();
