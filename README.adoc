@@ -5,6 +5,9 @@ This contains a script that can be run after a maven build.
 
 This script figures out how many tests ran and how many of them failed. The idea is that maven itself can just ignore test failures, and run to its end.
 
+Failures are also concisely outputted. So, it can also serve as maven oriented, drop in for something like `EnricoMi/publish-unit-test-result-action`
+
+It just supposes link:https://maven.apache.org/surefire/maven-surefire-plugin/[surefire]/link:https://maven.apache.org/surefire/maven-failsafe-plugin/[failsafe] testing, and possibly link:https://www.jacoco.org/jacoco/trunk/doc/maven.html[jacoco] for coverage.
 
 == Usage
 
@@ -23,12 +26,22 @@ Your step to build with maven and report the result might look something like th
       - name: Build with Maven
         run: mvn -B -D"maven.test.failure.ignore=true"
       - uses: MMProgrami/after-maven-action@v2
+        with:
+          coverage: true
+          determine_version: false
 ----
 Like this, all tests are run. The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are still run, and it is visible what those are. Also, there won't be a dip in the coverage if one test happened to fail once.
 
+=== Options
+
+The script current supports the following options
+
+coverage:: If set to `true` (default to `false`) then it will also find all `jacoco.xml` and presents a summary of that.
+determine_version:: If set to `true` (which is the default), it will also determine the pom version (the output of `mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout`), and report that. This can be useful information in subsequent steps, but it may slow down things for a second.
+
 == Notes about the implementation
 
-This thing will basically  search all failsafe/surefire results XMLs and extract the number of tests that ran, failed and errored, and add those up. The results are written in a file 'job.env' which may look something like this:
+This thing will basically search all failsafe/surefire results XMLs and extract the number of tests that ran, failed and errored, and add those up. The results are written in a file '$GITHUB_OUTPUT' which may look something like this:
 [source, properties]
 ----
 PROJECT_VERSION=0.19-SNAPSHOT

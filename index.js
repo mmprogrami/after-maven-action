@@ -2,8 +2,10 @@ const glob = require('glob');
 const fs = require('fs');
 const path = require('path');
 const SaxonJS = require("saxon-js");
+const process = require('process');
 
-const JOB_ENV = path.resolve('job.env');
+const JOB_ENV = path.resolve(process.env.GITHUB_OUTPUT || 'job.env');
+console.log("Writing to ", JOB_ENV)
 
 function setProperty(key, value, filePath) {
   let lines = [];
@@ -35,8 +37,11 @@ async function runMavenVersion() {
 
     const { exec } = require('child_process');
     return new Promise((resolve, reject) => {
-        exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout", (e, stdout, stderr) => {
-            setProperty("PROJECT_VERSION", `${stdout}`, JOB_ENV);
+        exec("mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout 2>/dev/null", (e, stdout, stderr) => {
+            if (stdout) {
+                const version = stdout.trim();
+                setProperty("PROJECT_VERSION", version, JOB_ENV);
+            }
             resolve();
         });
     });
