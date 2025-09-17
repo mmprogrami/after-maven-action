@@ -84,8 +84,7 @@ async function processTestReports(files) {
 async function printFailuresAndErrors(files) {
     const failuresAndErrorsPath = path.join(__dirname, 'failures_and_errors.sef.json');
 
-    await Promise.all(files.map(async (file) => {
-
+    for (const file of files) {
         const output = await SaxonJS.transform({
             stylesheetFileName: failuresAndErrorsPath,
             sourceFileName: file,
@@ -102,15 +101,14 @@ async function printFailuresAndErrors(files) {
                 .replaceAll('[failure]', '\x1b[33m[failure]\x1b[0m')
             );
         }
-    }));
+    }
 }
 
 async function printCoverageSummary() {
     const files = await globAsync('**/target/site/jacoco/jacoco.xml', {cwd: process.cwd()});
     const jacocoXsl = path.join(__dirname, 'jacoco.sef.json');
 
-    await Promise.all(files.map(async (file) => {
-
+    for (const file of files) {
         const output = await SaxonJS.transform({
             stylesheetFileName: jacocoXsl,
             sourceFileName: file,
@@ -121,7 +119,7 @@ async function printCoverageSummary() {
             }
         }, "async");
         console.log(output.principalResult)
-    }));
+    }
 }
 
 async function main() {
