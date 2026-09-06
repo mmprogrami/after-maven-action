@@ -1,4 +1,4 @@
-const glob = require('glob');
+const { glob } = require('glob');
 const fs = require('fs');
 const path = require('path');
 const SaxonJS = require("saxon-js");
@@ -22,15 +22,6 @@ function setProperty(key, value, filePath) {
   });
   if (!found) lines.push(`${key}=${value}`);
   fs.writeFileSync(filePath, lines.filter(Boolean).join('\n') + '\n');
-}
-
-function globAsync(pattern, options) {
-  return new Promise((resolve, reject) => {
-    glob(pattern, options, (err, files) => {
-      if (err) reject(err);
-      else resolve(files);
-    });
-  });
 }
 
 async function runMavenVersion() {
@@ -110,7 +101,7 @@ async function printFailuresAndErrors(files) {
 }
 
 async function printCoverageSummary() {
-    const files = await globAsync('**/target/site/jacoco/jacoco.xml', {cwd: process.cwd()});
+    const files = await glob('**/target/site/jacoco/jacoco.xml', {cwd: process.cwd()});
     const jacocoXsl = path.join(__dirname, 'jacoco.sef.json');
 
     for (const file of files) {
@@ -131,7 +122,7 @@ async function main() {
     if ((process.env['INPUT_DETERMINE_VERSION'] || 'true') === 'true') {
         await runMavenVersion();
     }
-    const files = await globAsync('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()});
+    const files = await glob('**/target/{surefire-reports,failsafe-reports}/*.xml', {cwd: process.cwd()});
     files.sort((a, b) => fs.statSync(a).mtime - fs.statSync(b).mtime);
 
     const {run, failed, error} =
