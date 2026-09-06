@@ -12,6 +12,7 @@
   <xsl:param name="artifactIdPad" as="xs:double" select="35" />
   <xsl:param name="namePad" as="xs:double" select="25" />
   <xsl:param name="fileSeparator" as="xs:string" select="/testsuite/properties/property[@name = 'file.separator']/@value" />
+  <xsl:param name="class" as="xs:string" select="/testsuite/@name" />
 
   <xsl:variable name="spaces">
     <xsl:text>                                                                 </xsl:text>
@@ -43,7 +44,16 @@
       <xsl:value-of select="../@name" />
       <xsl:value-of select="substring($spaces, 1, $namePad - string-length(../@name))" />
       <xsl:text> </xsl:text>
-      <xsl:value-of select="../@classname" />
+      <!--xsl:value-of select="../@classname" /-->
+      <xsl:value-of select="$class" />
+      <xsl:if test="$class != ../@classname">
+        <xsl:text> (</xsl:text>
+        <xsl:call-template name="substring-after-last">
+          <xsl:with-param name="input" select="../@classname" />
+          <xsl:with-param name="delimiter" select="'.'" />
+        </xsl:call-template>
+        <xsl:text>)</xsl:text>
+      </xsl:if>
       <xsl:text>&#xa;</xsl:text>
     </xsl:for-each>
   </xsl:template>
