@@ -1,0 +1,33 @@
+name: Update major version tag
+
+on:
+  push:
+    tags:
+      - "v*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  update-major-tag:
+    name: Point major tag at release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Update major version tag
+        shell: bash
+        run: |
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v([1-9][0-9]*)\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "Skipping non-release tag: $GITHUB_REF_NAME"
+            exit 0
+          fi
+
+          major_tag="v${BASH_REMATCH[1]}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --force --annotate "$major_tag" --message "Update $major_tag for $GITHUB_REF_NAME"
+          git push origin "refs/tags/$major_tag" --force
