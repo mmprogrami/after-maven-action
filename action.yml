@@ -14,14 +14,13 @@ inputs:
     description: 'show also coverage from jacoco.xml'
     required: false
     default: 'false'
-  maven_exit_code:
-    description: 'exit code of the preceding Maven build; a non-zero value fails this action'
+  maven_outcome:
+    description: 'outcome of the preceding Maven step; failure makes this action fail'
     required: false
-    default: '0'
+    default: 'success'
 
 
 runs:
   using: "node24"
   main: 'dist/index.js'
-
 

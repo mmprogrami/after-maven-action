@@ -31,7 +31,7 @@ steps:
     with:
       coverage: true
       determine_version: false
-      maven_exit_code: ${{ steps.maven.outcome == 'failure' && 1 || 0 }}
+      maven_outcome: ${{ steps.maven.outcome }}
   - name: Use variable
     run: |
       echo "The values are ${{ toJson(steps.after_maven.outputs) }}"
@@ -39,7 +39,7 @@ steps:
 ----
 Like this, all tests are run. The after-maven-action will then check how many tests ran and how many of them failed, and will fail the action if there were any test failures. The advantage is that in this way all remaining tests are still run, and it is visible what those are. Also, there won't be a dip in the coverage if one test happened to fail once.
 
-`maven_exit_code` also makes the action fail when Maven itself fails, including compilation errors. `continue-on-error: true` and `if: always()` ensure that the report step runs after such a failure. The example maps a failed Maven step to exit code `1`; if the exact Maven exit code is required, write it to a step output from a shell that captures `mvn`'s status.
+`maven_outcome` also makes the action fail when Maven itself fails, including compilation errors. `continue-on-error: true` and `if: always()` ensure that the report step runs after such a failure.
 
 === Options
 
@@ -47,7 +47,7 @@ The script current supports the following options
 
 coverage:: If set to `true` (default to `false`) then it will also find all `jacoco.xml` and presents a summary of that.
 determine_version:: If set to `true` (which is the default), it will also determine the pom version (the output of `mvn  -ntp help:evaluate -Dexpression=project.version -q -DforceStdout`), and report that. This can be useful information in subsequent steps, but it may slow down things for a second.
-maven_exit_code:: The exit code from the preceding Maven build (default `0`). A non-zero value makes this action fail, even when no test report was produced.
+maven_outcome:: The outcome from the preceding Maven step (default `success`), normally `${{ steps.maven.outcome }}`. A `failure` value makes this action fail, even when no test report was produced.
 
 == Notes about the implementation
 
