@@ -1,11 +1,11 @@
-= After maven action for github
+= After maven action for GitHub
 :toc:
 
 This contains a script that can be run after a maven build.
 
-This script figures out how many tests ran and how many of them failed. The idea is that maven itself can just ignore test failures, and run to its end.
+This script figures out how many tests ran and how many of them failed. The idea is that maven itself can just ignore test failures and run to its end.
 
-Failures are also concisely outputted. So, it can also serve as maven oriented, drop in for something like `EnricoMi/publish-unit-test-result-action`
+Failures are also concisely outputted. So, it can also serve as maven-oriented, drop in for something like `EnricoMi/publish-unit-test-result-action`
 
 It just supposes link:https://maven.apache.org/surefire/maven-surefire-plugin/[surefire]/link:https://maven.apache.org/surefire/maven-failsafe-plugin/[failsafe] testing, and possibly link:https://www.jacoco.org/jacoco/trunk/doc/maven.html[jacoco] for coverage.
 
@@ -62,7 +62,7 @@ MAVEN_TESTS_SKIPPED=0
 ----
 If there are failed or errored tests, the action will exit with a code > 0, which will fail the action.
 
-It will also concisely output which tetsts fails, if there are any.
+It will also concisely output which tests fail, if there are any.
 
 The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 
@@ -72,7 +72,7 @@ The script is tested for 'ubuntu-latest', 'windows-latest' and 'macos-latest'.
 
 === History
 
-Originally this script was using bash/xsltproc, and was (and is) used in link:https://github.org/vpro/maven[dedicated maven docker image], which we use in gitlab pipelines. To make it useable as a github action to I started with just installing the necessary tools and run the same script. This makes it a bit slow as a GitHub action. So starting from v2 it is purely Node.js, just based on the same XSLTs (using SaxonJS to execute them)
+Originally this script was using bash/xsltproc, and was (and is) used in link:https://github.org/vpro/maven[a dedicated maven docker image], which we use in gitlab pipelines. To make it usable as a GitHub Action too, I started with just installing the necessary tools and run the same script. This makes it a bit slow as a GitHub Action. So starting from v2 it is purely Node.js, just based on the same XSLTs (using SaxonJS to execute them)
 
 
 === Local development and useage
