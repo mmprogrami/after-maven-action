@@ -7,6 +7,14 @@ const process = require('process');
 const JOB_ENV = path.resolve(process.env.GITHUB_OUTPUT || 'job.env');
 console.log("Writing to ", JOB_ENV)
 
+function getMavenExitCode() {
+    const value = process.env.INPUT_MAVEN_EXIT_CODE || '0';
+    if (!/^\d+$/.test(value)) {
+        throw new Error(`INPUT_MAVEN_EXIT_CODE must be a non-negative integer, got "${value}"`);
+    }
+    return Number(value);
+}
+
 function setProperty(key, value, filePath) {
   let lines = [];
   if (fs.existsSync(filePath)) {
@@ -119,6 +127,8 @@ async function printCoverageSummary() {
 }
 
 async function main() {
+    const mavenExitCode = getMavenExitCode();
+
     if ((process.env['INPUT_DETERMINE_VERSION'] || 'true') === 'true') {
         await runMavenVersion();
     }
@@ -134,8 +144,10 @@ async function main() {
 
     await printFailuresAndErrors(files);
 
-
-    if (error > 0) {
+    if (mavenExitCode !== 0) {
+        console.error(`Maven exited with code ${mavenExitCode}, possibly due to compilation errors. Exit 3.`);
+        process.exit(3);
+    } else if (error > 0) {
         console.error(`Some (${error}) tests had errors. Exit 1.`);
         process.exit(1);
     } else if (failed > 0) {
