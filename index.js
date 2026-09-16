@@ -148,6 +148,7 @@ async function printCoverageSummary() {
 
 async function main() {
     const mavenOutcome = getMavenOutcome();
+    console.log(`Maven outcome: ${mavenOutcome}`);
 
     if ((process.env['INPUT_DETERMINE_VERSION'] || 'true') === 'true') {
         await runMavenVersion();
