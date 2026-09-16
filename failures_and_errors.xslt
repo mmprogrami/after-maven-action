@@ -14,6 +14,8 @@
   <xsl:param name="fileSeparator" as="xs:string" select="/testsuite/properties/property[@name = 'file.separator']/@value" />
   <xsl:param name="class" as="xs:string" select="/testsuite/@name" />
 
+  <xsl:param name="useSimpleClassName" as="xs:boolean" select="false()" />
+
   <xsl:variable name="spaces">
     <xsl:text>                                                                 </xsl:text>
   </xsl:variable>
@@ -45,8 +47,18 @@
       <xsl:value-of select="substring($spaces, 1, $namePad - string-length(../@name))" />
       <xsl:text> </xsl:text>
       <!--xsl:value-of select="../@classname" /-->
-      <xsl:value-of select="$class" />
-      <xsl:if test="$class != ../@classname">
+      <xsl:choose>
+        <xsl:when test="$useSimpleClassName">
+          <xsl:call-template name="substring-after-last">
+            <xsl:with-param name="input" select="$class" />
+            <xsl:with-param name="delimiter" select="'.'" />
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="$class" />
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="$class != ../@classname">
         <xsl:text> (</xsl:text>
         <xsl:call-template name="substring-after-last">
           <xsl:with-param name="input" select="../@classname" />

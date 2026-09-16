@@ -7,6 +7,29 @@ const process = require('process');
 const JOB_ENV = path.resolve(process.env.GITHUB_OUTPUT || 'job.env');
 console.log("Writing to ", JOB_ENV)
 
+function getBooleanInput(name, defaultValue) {
+    const value = process.env[`INPUT_${name}`];
+    return value === undefined ? defaultValue : value === 'true';
+}
+
+function getNumberInput(name, defaultValue) {
+    const value = process.env[`INPUT_${name}`];
+    if (value === undefined) return defaultValue;
+
+    const number = Number(value);
+    if (!Number.isFinite(number)) {
+        throw new Error(`INPUT_${name} must be a finite number, got "${value}"`);
+    }
+    return number;
+}
+
+function getStylesheetParams() {
+    return {
+        artifactIdPad: getNumberInput('ARTIFACTID_PAD', 30),
+        namePad: getNumberInput('NAME_PAD', 50)
+    };
+}
+
 function getMavenOutcome() {
     const value = process.env.INPUT_MAVEN_OUTCOME || 'success';
     if (!['success', 'failure', 'cancelled', 'skipped'].includes(value)) {
@@ -94,8 +117,8 @@ async function printFailuresAndErrors(files) {
             sourceFileName: file,
             destination: "serialized",
             stylesheetParams: {
-                artifactIdPad: 30,
-                namePad: 50
+                ...getStylesheetParams(),
+                useSimpleClassName: getBooleanInput('USE_SIMPLE_CLASS_NAME', true)
             }
         }, "async");
 
@@ -117,10 +140,7 @@ async function printCoverageSummary() {
             stylesheetFileName: jacocoXsl,
             sourceFileName: file,
             destination: "serialized",
-            stylesheetParams: {
-                artifactIdPad: 30,
-                namePad: 50
-            }
+            stylesheetParams: getStylesheetParams()
         }, "async");
         console.log(output.principalResult)
     }

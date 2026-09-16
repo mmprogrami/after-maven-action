@@ -18,6 +18,18 @@ inputs:
     description: 'outcome of the preceding Maven step; failure makes this action fail'
     required: false
     default: 'success'
+  use_simple_class_name:
+    description: 'strip package names from reported class name. normally it is clear enough without it'
+    required: false
+    default: 'true'
+  artifactId_pad:
+    description: 'pad artifactId to this length'
+    required: false
+    default: '30'
+  name_pad:
+    description: 'pad name to this length'
+    required: false
+    default: '50'
 
 
 runs:
